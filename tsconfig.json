@@ -1,0 +1,33 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"outDir": "./dist",
+		"baseUrl": "src",
+		"sourceMap": true,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"target": "es5",
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"es2016",
+			"dom"
+		]
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		"e2e",
+		"src/environments",
+		"src/main.ts",
+		"src/polyfills.ts",
+		"src/test.ts"
+	],
+	"angularCompilerOptions": {
+		"strictMetadataEmit": true,
+		"skipTemplateCodegen": true
+	}
+}
