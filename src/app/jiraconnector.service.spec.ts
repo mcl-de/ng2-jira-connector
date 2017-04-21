@@ -58,6 +58,17 @@ describe('JiraconnectorService', () => {
 		expect(result.body).toEqual(comment);
 	}));
 
+	it('should call handleError() if createComment() errors', fakeAsync(() => {
+		let result: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.createComment('FOO-123', 'foobar')
+			.then((res) => result = res)
+			.catch((error) => console.log(error));
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
+	}));
+
 	it('should get an issue with getIssue()', fakeAsync(() => {
 		let result: any;
 		this.connector.getIssue('FOO-123').then((res) => result = res);
@@ -82,7 +93,18 @@ describe('JiraconnectorService', () => {
 		);
 		tick();
 		expect(result.key).toEqual('FOO-123');
-		expect(result.fields.summary).toBeTruthy();
+		expect(result.fields.summary).toBeDefined();
+	}));
+
+	it('should call handleError() if getIssue() errors', fakeAsync(() => {
+		let result: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.getIssue('FOO-123')
+			.then((res) => result = res)
+			.catch((error) => console.log(error));
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
 	}));
 
 	it('should create an issue with createIssue()', fakeAsync(() => {
@@ -113,6 +135,28 @@ describe('JiraconnectorService', () => {
 		);
 		tick();
 		expect(result.key).toEqual('FOO-456');
+	}));
+
+	it('should call handleError() if createIssue() errors', fakeAsync(() => {
+		let result: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.createIssue({
+			project: {
+				key: 'Foo'
+			},
+			issuetype: {
+				id: 1
+			},
+			summary: 'Test',
+			labels: [
+				'Bar'
+			]
+		})
+			.then((res) => result = res)
+			.catch((error) => console.log(error));
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
 	}));
 
 	it('should get several issues with searchIssues()', fakeAsync(() => {
@@ -160,5 +204,27 @@ describe('JiraconnectorService', () => {
 		tick();
 		expect(result.total).toEqual(result.issues.length);
 		expect(result.issues[0].fields.labels[0]).toEqual('Bar');
+	}));
+
+	it('should call handleError() if searchIssues() errors', fakeAsync(() => {
+		let result: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.searchIssues('project = Foo AND labels = Bar AND status != Closed')
+			.then((res) => result = res)
+			.catch((error) => console.log(error));
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
+	}));
+
+	it('should return an error with handleError()', fakeAsync(() => {
+		let result: any;
+		let error: any;
+		this.connector.handleError(new Error('some error'))
+			.then((res) => result = res)
+			.catch((err) => error = err);
+		tick();
+		expect(result).toBeUndefined();
+		expect(error).toBeDefined();
 	}));
 });

@@ -48,32 +48,31 @@ export class JiraconnectorService {
 		return this._http.post(this.jiraUrl + 'issue/' + issueId + '/comment', JSON.stringify({ body: comment }), { headers: this.headers, withCredentials: true })
 			.toPromise()
 			.then((response) => response.json())
-			.catch((error) => this._handleError(error));
+			.catch((error) => this.handleError(error));
 	}
 
 	public createIssue(fields: IIssueFields): Promise<any> {
 		return this._http.post(this.jiraUrl + 'issue', JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
 			.toPromise()
 			.then((response) => response.json())
-			.catch((error) => this._handleError(error));
+			.catch((error) => this.handleError(error));
 	}
 
 	public getIssue(issueId: string): Promise<any> {
 		return this._http.get(this.jiraUrl + 'issue/' + issueId, { withCredentials: true })
 			.toPromise()
 			.then((response) => response.json())
-			.catch((error) => this._handleError(error));
+			.catch((error) => this.handleError(error));
 	}
 
 	public searchIssues(jqlString: string): Promise<any> {
 		return this._http.post(this.jiraUrl + 'search', { jql: jqlString }, { withCredentials: true })
 			.toPromise()
 			.then((response) => response.json())
-			.catch((error) => this._handleError(error));
+			.catch((error) => this.handleError(error));
 	}
 
-	private _handleError(error: any): Promise<any> {
-		console.error('An error occurred', error);
+	public handleError(error: any): Promise<any> {
 		return Promise.reject(error.message || error);
 	}
 }
