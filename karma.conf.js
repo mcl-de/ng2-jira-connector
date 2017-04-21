@@ -8,7 +8,7 @@ module.exports = function (config) {
 		plugins: [
 			require('karma-jasmine'),
 			require('karma-chrome-launcher'),
-			require('karma-jasmine-html-reporter'),
+			require('karma-coverage'),
 			require('karma-coverage-istanbul-reporter'),
 			require('@angular/cli/plugins/karma')
 		],
@@ -17,6 +17,10 @@ module.exports = function (config) {
 		},
 		files: [
 			{ pattern: './src/test.ts', watched: false }
+		],
+		// exclude angular node-modules
+		exclude: [
+			'node_modules/angular2/**/*_spec.js'
 		],
 		preprocessors: {
 			'./src/test.ts': ['@angular/cli']
@@ -32,8 +36,17 @@ module.exports = function (config) {
 			environment: 'dev'
 		},
 		reporters: config.angularCli && config.angularCli.codeCoverage
-			? ['progress', 'coverage-istanbul']
-			: ['progress', 'kjhtml'],
+			? ['progress', 'coverage-istanbul', 'coverage']
+			: ['progress'],
+		remapIstanbulReporter: {
+			reports: {
+				html: 'coverage',
+				lcovonly: './coverage/coverage.lcov'
+			}
+		},
+		coverageReporter: {
+			type: 'text-summary',
+		},
 		port: 9876,
 		colors: true,
 		logLevel: config.LOG_INFO,
