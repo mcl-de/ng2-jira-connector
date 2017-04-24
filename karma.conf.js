@@ -8,7 +8,6 @@ module.exports = function (config) {
 		plugins: [
 			require('karma-jasmine'),
 			require('karma-chrome-launcher'),
-			require('karma-coverage'),
 			require('karma-coverage-istanbul-reporter'),
 			require('@angular/cli/plugins/karma')
 		],
@@ -36,16 +35,13 @@ module.exports = function (config) {
 			environment: 'dev'
 		},
 		reporters: config.angularCli && config.angularCli.codeCoverage
-			? ['progress', 'coverage-istanbul', 'coverage']
+			? ['progress', 'coverage-istanbul']
 			: ['progress'],
 		remapIstanbulReporter: {
 			reports: {
 				html: 'coverage',
 				lcovonly: './coverage/coverage.lcov'
 			}
-		},
-		coverageReporter: {
-			type: 'text-summary',
 		},
 		port: 9876,
 		colors: true,
