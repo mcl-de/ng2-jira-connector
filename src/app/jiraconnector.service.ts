@@ -44,35 +44,31 @@ export class JiraconnectorService {
 		this.headers.append('Authorization', 'Basic ' + window.btoa(`${username}:${password}`));
 	}
 
-	public createComment(issueId: string, comment: string): Promise<any> {
+	public createComment(issueId: string, comment: string): Observable<any> {
 		return this._http.post(this.jiraUrl + 'issue/' + issueId + '/comment', JSON.stringify({ body: comment }), { headers: this.headers, withCredentials: true })
-			.toPromise()
-			.then((response) => response.json())
+			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
-	public createIssue(fields: IIssueFields): Promise<any> {
+	public createIssue(fields: IIssueFields): Observable<any> {
 		return this._http.post(this.jiraUrl + 'issue', JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
-			.toPromise()
-			.then((response) => response.json())
+			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
-	public getIssue(issueId: string): Promise<any> {
+	public getIssue(issueId: string): Observable<any> {
 		return this._http.get(this.jiraUrl + 'issue/' + issueId, { withCredentials: true })
-			.toPromise()
-			.then((response) => response.json())
+			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
-	public searchIssues(jqlString: string): Promise<any> {
+	public searchIssues(jqlString: string): Observable<any> {
 		return this._http.post(this.jiraUrl + 'search', { jql: jqlString }, { withCredentials: true })
-			.toPromise()
-			.then((response) => response.json())
+			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
-	public handleError(error: any): Promise<any> {
-		return Promise.reject(error.message || error);
+	public handleError(error: any): Observable<any> {
+		return Observable.throw(error.message || error);
 	}
 }
