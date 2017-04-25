@@ -20,6 +20,7 @@ export interface IIssueType {
 }
 export interface IIssueFields {
 	components?: any[];
+	customfields?: Object;
 	description?: string;
 	duedate?: any;
 	issuetype: IIssueType;
@@ -45,30 +46,48 @@ export class JiraconnectorService {
 	}
 
 	public createComment(issueId: string, comment: string): Observable<any> {
-		return this._http.post(this.jiraUrl + 'issue/' + issueId + '/comment', JSON.stringify({ body: comment }), { headers: this.headers, withCredentials: true })
+		return this._http.post(`${this.jiraUrl}issue/${issueId}/comment`, JSON.stringify({ body: comment }), { headers: this.headers, withCredentials: true })
 			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
 	public createIssue(fields: IIssueFields): Observable<any> {
-		return this._http.post(this.jiraUrl + 'issue', JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
+		if (fields.customfields) {
+			for (let key in fields.customfields) {
+				fields[key] = fields.customfields[key];
+			}
+			fields.customfields = null;
+		}
+		return this._http.post(`${this.jiraUrl}issue`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
+			.map((response) => response.json())
+			.catch((error) => this.handleError(error));
+	}
+
+	public editIssue(issueId: string, fields: IIssueFields): Observable<any> {
+		if (fields.customfields) {
+			for (let key in fields.customfields) {
+				fields[key] = fields.customfields[key];
+			}
+			fields.customfields = null;
+		}
+		return this._http.put(`${this.jiraUrl}issue/${issueId}`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
 			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
 	public getIssue(issueId: string): Observable<any> {
-		return this._http.get(this.jiraUrl + 'issue/' + issueId, { withCredentials: true })
+		return this._http.get(`${this.jiraUrl}issue/${issueId}`, { withCredentials: true })
 			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
 	public searchIssues(jqlString: string): Observable<any> {
-		return this._http.post(this.jiraUrl + 'search', { jql: jqlString }, { withCredentials: true })
+		return this._http.post(`${this.jiraUrl}search`, { jql: jqlString }, { withCredentials: true })
 			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
 	}
 
-	public handleError(error: any): Observable<any> {
+	public handleError(error: any): Observable<string> {
 		return Observable.throw(error.message || error);
 	}
 }
