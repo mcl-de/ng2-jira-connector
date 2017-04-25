@@ -46,39 +46,29 @@ export class JiraconnectorService {
 	}
 
 	public createComment(issueId: string, comment: string): Observable<any> {
-		return this._http.post(`${this.jiraUrl}issue/${issueId}/comment`, JSON.stringify({ body: comment }), { headers: this.headers, withCredentials: true })
-			.map((response) => response.json())
-			.catch((error) => this.handleError(error));
+		return this._post(`${this.jiraUrl}issue/${issueId}/comment`, JSON.stringify({ body: comment }));
 	}
 
 	public createIssue(fields: IIssueFields): Observable<any> {
 		if (fields.customfields) {
 			this.mapCustomfields(fields);
 		}
-		return this._http.post(`${this.jiraUrl}issue`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
-			.map((response) => response.json())
-			.catch((error) => this.handleError(error));
+		return this._post(`${this.jiraUrl}issue`, JSON.stringify({ fields: fields }));
 	}
 
 	public editIssue(issueId: string, fields: any): Observable<any> {
 		if (fields.customfields) {
 			this.mapCustomfields(fields);
 		}
-		return this._http.put(`${this.jiraUrl}issue/${issueId}`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
-			.map((response) => response.json())
-			.catch((error) => this.handleError(error));
+		return this._put(`${this.jiraUrl}issue/${issueId}`, JSON.stringify({ fields: fields }));
 	}
 
 	public getIssue(issueId: string): Observable<any> {
-		return this._http.get(`${this.jiraUrl}issue/${issueId}`, { withCredentials: true })
-			.map((response) => response.json())
-			.catch((error) => this.handleError(error));
+		return this._get(`${this.jiraUrl}issue/${issueId}`);
 	}
 
 	public searchIssues(jqlString: string): Observable<any> {
-		return this._http.post(`${this.jiraUrl}search`, { jql: jqlString }, { withCredentials: true })
-			.map((response) => response.json())
-			.catch((error) => this.handleError(error));
+		return this._post(`${this.jiraUrl}search`, { jql: jqlString });
 	}
 
 	public mapCustomfields(fields: IIssueFields): void {
@@ -90,5 +80,23 @@ export class JiraconnectorService {
 
 	public handleError(error: any): Observable<string> {
 		return Observable.throw(error.message || error);
+	}
+
+	private _get(url: string) {
+		return this._http.get(url, { withCredentials: true })
+			.map((response) => response.json())
+			.catch((error) => this.handleError(error));
+	}
+
+	private _post(url: string, body: any): Observable<any> {
+		return this._http.post(url, body, { headers: this.headers, withCredentials: true })
+			.map((response) => response.json())
+			.catch((error) => this.handleError(error));
+	}
+
+	private _put(url: string, body: any): Observable<string> {
+		return this._http.put(url, body, { headers: this.headers, withCredentials: true })
+			.map((response) => response.json())
+			.catch((error) => this.handleError(error));
 	}
 }
