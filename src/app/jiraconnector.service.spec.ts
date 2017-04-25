@@ -123,6 +123,10 @@ describe('JiraconnectorService', () => {
 				id: 1
 			},
 			summary: 'Test',
+			customfields: {
+				customfield_10000: 'foo',
+				customfield_10001: 'bar',
+			},
 			labels: [
 				'Bar'
 			]
@@ -141,6 +145,8 @@ describe('JiraconnectorService', () => {
 		);
 		tick();
 		expect(result.key).toEqual('FOO-456');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('foo');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('bar');
 	}));
 
 	it('should call handleError() if createIssue() errors', fakeAsync(() => {
