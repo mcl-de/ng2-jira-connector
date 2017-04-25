@@ -147,6 +147,7 @@ describe('JiraconnectorService', () => {
 		expect(result.key).toEqual('FOO-456');
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('foo');
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('bar');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
 	}));
 
 	it('should call handleError() if createIssue() errors', fakeAsync(() => {
@@ -165,6 +166,56 @@ describe('JiraconnectorService', () => {
 				'Bar'
 			]
 		}).subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
+	}));
+
+	it('should edit an issue with editIssue()', fakeAsync(() => {
+		let result: any;
+		this.connector.editIssue(
+			'FOO-456',
+			{
+				summary: 'Test',
+				customfields: {
+					customfield_10000: 'test',
+					customfield_10001: 'foobarbaz',
+				},
+				labels: [
+					'Bar'
+				]
+			}
+		).subscribe((res) => result = res);
+		lastConnection.mockRespond(
+			new Response(
+				new ResponseOptions({
+					status: 204
+				})
+			)
+		);
+		tick();
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('test');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('foobarbaz');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
+	}));
+
+	it('should call handleError() if editIssue() errors', fakeAsync(() => {
+		let result: any;
+		let error: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.editIssue(
+			'FOO-456',
+			{
+				summary: 'Test',
+				labels: [
+					'Bar'
+				]
+			}
+		).subscribe(
 			(res) => result = res,
 			(err) => error = err
 		);
