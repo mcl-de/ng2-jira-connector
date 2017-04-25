@@ -308,13 +308,13 @@ describe('JiraconnectorService', () => {
 			},
 			summary: 'FOO-123',
 			customfields: {
-				customfield_10001: 'foo',
-				customfield_10002: 'bar',
+				customfield_10000: 'foo',
+				customfield_10001: 'bar',
 			}
 		}
 		this.connector.mapCustomfields(fields);
-		expect(fields['customfield_10001']).toEqual('foo');
-		expect(fields['customfield_10002']).toEqual('bar');
+		expect(fields['customfield_10000']).toEqual('foo');
+		expect(fields['customfield_10001']).toEqual('bar');
 		expect(fields.customfields).toBeNull;
 	});
 });

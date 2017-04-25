@@ -60,7 +60,7 @@ export class JiraconnectorService {
 			.catch((error) => this.handleError(error));
 	}
 
-	public editIssue(issueId: string, fields: IIssueFields): Observable<any> {
+	public editIssue(issueId: string, fields: any): Observable<any> {
 		if (fields.customfields) {
 			this.mapCustomfields(fields);
 		}
