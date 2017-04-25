@@ -53,10 +53,7 @@ export class JiraconnectorService {
 
 	public createIssue(fields: IIssueFields): Observable<any> {
 		if (fields.customfields) {
-			for (let key in fields.customfields) {
-				fields[key] = fields.customfields[key];
-			}
-			fields.customfields = null;
+			this.mapCustomfields(fields);
 		}
 		return this._http.post(`${this.jiraUrl}issue`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
 			.map((response) => response.json())
@@ -65,10 +62,7 @@ export class JiraconnectorService {
 
 	public editIssue(issueId: string, fields: IIssueFields): Observable<any> {
 		if (fields.customfields) {
-			for (let key in fields.customfields) {
-				fields[key] = fields.customfields[key];
-			}
-			fields.customfields = null;
+			this.mapCustomfields(fields);
 		}
 		return this._http.put(`${this.jiraUrl}issue/${issueId}`, JSON.stringify({ fields: fields }), { headers: this.headers, withCredentials: true })
 			.map((response) => response.json())
@@ -85,6 +79,13 @@ export class JiraconnectorService {
 		return this._http.post(`${this.jiraUrl}search`, { jql: jqlString }, { withCredentials: true })
 			.map((response) => response.json())
 			.catch((error) => this.handleError(error));
+	}
+
+	public mapCustomfields(fields: IIssueFields): void {
+		for (let key in fields.customfields) {
+			fields[key] = fields.customfields[key];
+		}
+		fields.customfields = null;
 	}
 
 	public handleError(error: any): Observable<string> {
