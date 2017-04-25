@@ -43,7 +43,7 @@ describe('JiraconnectorService', () => {
 	it('should create a comment with createComment()', fakeAsync(() => {
 		let result: any;
 		let comment: String = 'foobar';
-		this.connector.createComment('FOO-123', comment).then((res) => result = res);
+		this.connector.createComment('FOO-123', comment).subscribe((res) => result = res);
 		lastConnection.mockRespond(
 			new Response(
 				new ResponseOptions({
@@ -60,18 +60,21 @@ describe('JiraconnectorService', () => {
 
 	it('should call handleError() if createComment() errors', fakeAsync(() => {
 		let result: any;
+		let error: any;
 		spyOn(this.connector, 'handleError');
-		this.connector.createComment('FOO-123', 'foobar')
-			.then((res) => result = res)
-			.catch((error) => console.log(error));
+		this.connector.createComment('FOO-123', 'foobar').subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
 		lastConnection.mockError(new Error('some error'));
 		tick();
 		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
 	}));
 
 	it('should get an issue with getIssue()', fakeAsync(() => {
 		let result: any;
-		this.connector.getIssue('FOO-123').then((res) => result = res);
+		this.connector.getIssue('FOO-123').subscribe((res) => result = res);
 		lastConnection.mockRespond(
 			new Response(
 				new ResponseOptions({
@@ -98,13 +101,16 @@ describe('JiraconnectorService', () => {
 
 	it('should call handleError() if getIssue() errors', fakeAsync(() => {
 		let result: any;
+		let error: any;
 		spyOn(this.connector, 'handleError');
-		this.connector.getIssue('FOO-123')
-			.then((res) => result = res)
-			.catch((error) => console.log(error));
+		this.connector.getIssue('FOO-123').subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
 		lastConnection.mockError(new Error('some error'));
 		tick();
 		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
 	}));
 
 	it('should create an issue with createIssue()', fakeAsync(() => {
@@ -117,10 +123,14 @@ describe('JiraconnectorService', () => {
 				id: 1
 			},
 			summary: 'Test',
+			customfields: {
+				customfield_10000: 'foo',
+				customfield_10001: 'bar',
+			},
 			labels: [
 				'Bar'
 			]
-		}).then((res) => result = res);
+		}).subscribe((res) => result = res);
 		lastConnection.mockRespond(
 			new Response(
 				new ResponseOptions({
@@ -135,10 +145,14 @@ describe('JiraconnectorService', () => {
 		);
 		tick();
 		expect(result.key).toEqual('FOO-456');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('foo');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('bar');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
 	}));
 
 	it('should call handleError() if createIssue() errors', fakeAsync(() => {
 		let result: any;
+		let error: any;
 		spyOn(this.connector, 'handleError');
 		this.connector.createIssue({
 			project: {
@@ -151,17 +165,69 @@ describe('JiraconnectorService', () => {
 			labels: [
 				'Bar'
 			]
-		})
-			.then((res) => result = res)
-			.catch((error) => console.log(error));
+		}).subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
 		lastConnection.mockError(new Error('some error'));
 		tick();
 		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
+	}));
+
+	it('should edit an issue with editIssue()', fakeAsync(() => {
+		let result: any;
+		this.connector.editIssue(
+			'FOO-456',
+			{
+				summary: 'Test',
+				customfields: {
+					customfield_10000: 'test',
+					customfield_10001: 'foobarbaz',
+				},
+				labels: [
+					'Bar'
+				]
+			}
+		).subscribe((res) => result = res);
+		lastConnection.mockRespond(
+			new Response(
+				new ResponseOptions({
+					status: 204
+				})
+			)
+		);
+		tick();
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('test');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('foobarbaz');
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
+	}));
+
+	it('should call handleError() if editIssue() errors', fakeAsync(() => {
+		let result: any;
+		let error: any;
+		spyOn(this.connector, 'handleError');
+		this.connector.editIssue(
+			'FOO-456',
+			{
+				summary: 'Test',
+				labels: [
+					'Bar'
+				]
+			}
+		).subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
+		lastConnection.mockError(new Error('some error'));
+		tick();
+		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
 	}));
 
 	it('should get several issues with searchIssues()', fakeAsync(() => {
 		let result: any;
-		this.connector.searchIssues('project = Foo AND labels = Bar AND status != Closed').then((res) => result = res);
+		this.connector.searchIssues('project = Foo AND labels = Bar AND status != Closed').subscribe((res) => result = res);
 		lastConnection.mockRespond(
 			new Response(
 				new ResponseOptions({
@@ -208,21 +274,25 @@ describe('JiraconnectorService', () => {
 
 	it('should call handleError() if searchIssues() errors', fakeAsync(() => {
 		let result: any;
+		let error: any;
 		spyOn(this.connector, 'handleError');
-		this.connector.searchIssues('project = Foo AND labels = Bar AND status != Closed')
-			.then((res) => result = res)
-			.catch((error) => console.log(error));
+		this.connector.searchIssues('project = Foo AND labels = Bar AND status != Closed').subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
 		lastConnection.mockError(new Error('some error'));
 		tick();
 		expect(this.connector.handleError).toHaveBeenCalled();
+		expect(error).toBeDefined();
 	}));
 
 	it('should return an error with handleError()', fakeAsync(() => {
 		let result: any;
 		let error: any;
-		this.connector.handleError(new Error('some error'))
-			.then((res) => result = res)
-			.catch((err) => error = err);
+		this.connector.handleError(new Error('some error')).subscribe(
+			(res) => result = res,
+			(err) => error = err
+		);
 		tick();
 		expect(result).toBeUndefined();
 		expect(error).toBeDefined();
