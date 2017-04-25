@@ -297,4 +297,24 @@ describe('JiraconnectorService', () => {
 		expect(result).toBeUndefined();
 		expect(error).toBeDefined();
 	}));
+
+	it('should map customfields with mapCustomfields()', () => {
+		let fields = {
+			project: {
+				key: 'NX'
+			},
+			issuetype: {
+				id: 1
+			},
+			summary: 'FOO-123',
+			customfields: {
+				customfield_10001: 'foo',
+				customfield_10002: 'bar',
+			}
+		}
+		this.connector.mapCustomfields(fields);
+		expect(fields['customfield_10001']).toEqual('foo');
+		expect(fields['customfield_10002']).toEqual('bar');
+		expect(fields.customfields).toBeNull;
+	});
 });
