@@ -147,7 +147,7 @@ describe('JiraconnectorService', () => {
 		expect(result.key).toEqual('FOO-456');
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('foo');
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('bar');
-		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeUndefined;
 	}));
 
 	it('should call handleError() if createIssue() errors', fakeAsync(() => {
@@ -200,7 +200,7 @@ describe('JiraconnectorService', () => {
 		tick();
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10000).toEqual('test');
 		expect(JSON.parse(lastConnection.request.getBody()).fields.customfield_10001).toEqual('foobarbaz');
-		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeNull;
+		expect(JSON.parse(lastConnection.request.getBody()).fields.customfields).toBeUndefined;
 	}));
 
 	it('should call handleError() if editIssue() errors', fakeAsync(() => {
@@ -315,6 +315,6 @@ describe('JiraconnectorService', () => {
 		this.connector.mapCustomfields(fields);
 		expect(fields['customfield_10000']).toEqual('foo');
 		expect(fields['customfield_10001']).toEqual('bar');
-		expect(fields.customfields).toBeNull;
+		expect(fields.customfields).toBeUndefined;
 	});
 });

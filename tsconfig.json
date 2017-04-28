@@ -24,7 +24,8 @@
 		"src/environments",
 		"src/main.ts",
 		"src/polyfills.ts",
-		"src/test.ts"
+		"src/test.ts",
+		"src/**/*.spec.ts"
 	],
 	"angularCompilerOptions": {
 		"strictMetadataEmit": true,

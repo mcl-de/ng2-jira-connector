@@ -75,7 +75,7 @@ export class JiraconnectorService {
 		for (let key in fields.customfields) {
 			fields[key] = fields.customfields[key];
 		}
-		fields.customfields = null;
+		delete fields.customfields;
 	}
 
 	public handleError(error: any): Observable<string> {
