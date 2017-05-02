@@ -1,19 +1,22 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
-		"outDir": "./dist",
 		"baseUrl": "src",
-		"sourceMap": true,
-		"declaration": false,
-		"moduleResolution": "node",
+		"declaration": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
+		"module": "es2015",
+		"moduleResolution": "node",
+		"outDir": "./dist",
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"stripInternal": true,
 		"target": "es5",
 		"typeRoots": [
 			"node_modules/@types"
 		],
 		"lib": [
-			"es2016",
+			"es2015",
 			"dom"
 		]
 	},
@@ -28,7 +31,9 @@
 		"src/**/*.spec.ts"
 	],
 	"angularCompilerOptions": {
+		"annotateForClosureCompiler": true,
 		"strictMetadataEmit": true,
-		"skipTemplateCodegen": true
+		"skipTemplateCodegen": true,
+		"flatModuleId": "jiraconnector"
 	}
 }
