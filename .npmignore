@@ -1,0 +1,18 @@
+# JetBrains
+.idea/
+.idea_modules/
+*.iws
+
+# Gitlab
+.gitlab-ci.yml
+
+# EditorConfig
+.editorconfig
+
+# Angular2-CLI
+/e2e
+/coverage
+/src
+
+# Node
+/node_modules
