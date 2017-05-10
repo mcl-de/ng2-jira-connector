@@ -1,0 +1,13 @@
+div.container {
+	display: flex;
+	justify-content: center;
+}
+div.text {
+	flex: 0.5;
+}
+div.label {
+	flex: 0.1;
+}
+button, input {
+	width: 100%
+}

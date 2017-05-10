@@ -1,0 +1,35 @@
+<form [formGroup]="issueForm" (ngSubmit)="getIssue(issueForm.value.issueId)">
+	<div class="container">
+		<div class="text">
+			<input
+				type="text"
+				formControlName="issueId"
+				placeholder="Search for a single JIRA issue using an ID"
+				#issueId
+			>
+		</div>
+		<div class="label">
+			<button type="submit" [disabled]="issueId.value.length === 0">Search</button>
+		</div>
+	</div>
+</form>
+<form [formGroup]="issuesForm" (ngSubmit)="getIssues(issuesForm.value.jqlString)">
+	<div class="container">
+		<div class="text">
+			<input
+				type="text"
+				formControlName="jqlString"
+				placeholder="Search for JIRA issues using a JQL string"
+				#jqlString
+			>
+		</div>
+		<div class="label">
+			<button type="submit" [disabled]="jqlString.value.length === 0">Search</button>
+		</div>
+	</div>
+</form>
+<br/>
+<div>
+	<span>Result:</span>
+	<pre>{{ result | async | json }}</pre>
+</div>

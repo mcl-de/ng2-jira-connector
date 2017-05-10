@@ -1,7 +1,6 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, Http } from '@angular/http';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/toPromise';
 
 export interface IProjectPartial {
 	id?: string|number;
