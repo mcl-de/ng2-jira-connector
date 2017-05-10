@@ -8,9 +8,10 @@
     "build": "rm -rf dist && ngc -p tsconfig.json",
     "test": "ng test",
     "lint": "ng lint",
-    "prepublish": "npm run build"
+    "prepublishOnly": "rm -rf dist && ngc -p tsconfig.prepublish.json && ng test --progress=false --watch=false"
   },
   "private": true,
+  "main": "dist/out-tsc/index.js",
   "dependencies": {
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
