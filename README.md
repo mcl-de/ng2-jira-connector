@@ -13,7 +13,7 @@ imports: [
 ],
 providers: [
 	...
-	{provide: JIRA_URL, useValue: 'https://jira.mcl.de/rest/api/2/'}
+	{provide: JIRA_URL, useValue: 'https://jira.foo.bar/rest/api/2/'}
 ],
 ...
 ```
