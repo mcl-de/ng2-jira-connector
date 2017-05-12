@@ -12,7 +12,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `npm run build` to build the project. Copy the newly created 'dist' folder to the 'binary' branch in this project and push it. You can then import it in your other modules.
+Run `npm run prepublishOnly` to build the project into the dist/ folder. You can then import it in your other modules.
 
 ## Running unit tests
 
